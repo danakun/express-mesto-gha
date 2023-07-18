@@ -59,21 +59,22 @@ const createUser = (req, res, next) => User.create(req.body)
 //     }
 //   });
 const getUser = (req, res) => {
-  const { userId } = req.params;
+  // const { userId } = req.params;
 
-  User.findById(userId)
+  User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
         res.status(NotFound).send({ message: 'Пользователь не найден' });
         return;
       }
-      res.send(user);
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        return res.status(BadRequest).send({ message: 'Переданы некорректные данные' });
+        res.status(BadRequest).send({ message: 'Переданы некорректные данные' });
+      } else {
+        res.status(InternalServerError).send({ message: err.message });
       }
-      return res.status(InternalServerError).send({ message: err.message });
     });
 };
 
