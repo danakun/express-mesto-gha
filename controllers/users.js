@@ -45,19 +45,38 @@ const createUser = (req, res, next) => User.create(req.body)
 //   }
 // }
 
-const getUser = (req, res) => User.findById(req.params.userId)
-  .orFail(() => {
-    throw new NotFound();
-  })
-  .then((user) => res.status(200).send(user))
-  .catch((err) => {
-    if (err.name === 'NotFound') {
-      res.status(err.status)
-        .send({ message: `${err}: Пользователь по указанному id не найден` });
-    } else {
-      res.status(500).send({ message: `Internal server error ${err}` });
-    }
-  });
+// const getUser = (req, res) => User.findById(req.params.userId)
+//   .orFail(() => {
+//     throw new NotFound();
+//   })
+//   .then((user) => res.status(200).send(user))
+//   .catch((err) => {
+//     if (err.name === 'NotFound') {
+//       res.status(err.status)
+//         .send({ message: `${err}: Пользователь по указанному id не найден` });
+//     } else {
+//       res.status(500).send({ message: `Internal server error ${err}` });
+//     }
+//   });
+
+const getUser = (req, res) => {
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        res.status(NotFound).send({ message: 'Пользователь по указанному id не найден' });
+      } else {
+        res.status(200).send(user);
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные' });
+      } else {
+        res.status(InternalServerError).send({ message: err.message });
+      }
+    });
+};
+
 // const getUser = (req, res) => {
 //   const { userId } = req.params;
 
