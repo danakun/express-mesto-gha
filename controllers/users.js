@@ -1,6 +1,6 @@
 const User = require('../models/user');
 const NotFound = require('../errors/NotFound');
-const InternalServerError = require('../errors/InternalServerError').default;
+const InternalServerError = require('../errors/InternalServerError');
 const BadRequest = require('../errors/BadRequest');
 
 const createUser = (req, res, next) => User.create(req.body)
@@ -8,11 +8,9 @@ const createUser = (req, res, next) => User.create(req.body)
   .catch((err) => {
     if (err.name === 'ValidationError') {
       next(new BadRequest('При создании пользователя переданы некорректные данные'));
-      // res.status(BadRequest).send({ message: `Error validating user ${err}`})
       res.status(400).send(err);
     } else {
       next(new InternalServerError());
-    // res.status(500).send({ message: `Internal server error ${err}`})
     }
   });
 
