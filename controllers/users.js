@@ -45,38 +45,38 @@ const createUser = (req, res, next) => User.create(req.body)
 //   }
 // }
 
-// const getUser = (req, res) => User.findById(req.params.userId)
-//   .orFail(() => {
-//     throw new NotFound();
-//   })
-//   .then((user) => res.status(200).send(user))
-//   .catch((err) => {
-//     if (err.name === 'NotFound') {
-//       res.status(err.status)
-//         .send({ message: `${err}: Пользователь по указанному id не найден` });
-//     } else {
-//       res.status(500).send({ message: `Internal server error ${err}` });
-//     }
-//   });
-const getUser = (req, res) => {
-  const { userId } = req.params;
+const getUser = (req, res) => User.findById(req.params.userId)
+  .orFail(() => {
+    throw new NotFound();
+  })
+  .then((user) => res.status(200).send(user))
+  .catch((err) => {
+    if (err.name === 'NotFound') {
+      res.status(err.status)
+        .send({ message: `${err}: Пользователь по указанному id не найден` });
+    } else {
+      res.status(500).send({ message: `Internal server error ${err}` });
+    }
+  });
+// const getUser = (req, res) => {
+//   const { userId } = req.params;
 
-  User.findById(userId)
-    .then((user) => {
-      if (!user) {
-        res.status(NotFound).send({ message: 'Пользователь не найден' });
-        return;
-      }
-      res.status(200).send(user);
-    })
-    .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        res.status(BadRequest).send({ message: 'Переданы некорректные данные' });
-      } else {
-        res.status(InternalServerError).send({ message: err.message });
-      }
-    });
-};
+//   User.findById(userId)
+//     .then((user) => {
+//       if (!user) {
+//         res.status(NotFound).send({ message: 'Пользователь не найден' });
+//         return;
+//       }
+//       res.status(200).send(user);
+//     })
+//     .catch((err) => {
+//       if (err.name === 'CastError' || err.name === 'ValidationError') {
+//         res.status(BadRequest).send({ message: 'Переданы некорректные данные' });
+//       } else {
+//         res.status(InternalServerError).send({ message: err.message });
+//       }
+//     });
+// };
 
 const getUsers = (req, res, next) => User.find({})
   .orFail(() => {
