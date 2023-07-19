@@ -59,20 +59,40 @@ const createUser = (req, res, next) => User.create(req.body)
 //     }
 //   });
 
+// const getUser = (req, res) => {
+//   User.findById(req.params.userId)
+//     .then((user) => {
+//       if (!user) {
+//         res.status(NotFound).send({ message: 'Пользователь по указанному id не найден' });
+//       } else {
+//         res.status(200).send(user);
+//       }
+//     })
+//     .catch((err) => {
+//       if (err.name === 'CastError') {
+//         res.status(400).send({ message: 'Переданы некорректные данные' });
+//       } else {
+//         res.status(InternalServerError).send({ message: err.message });
+//       }
+//     });
+// };
+
 const getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        res.status(NotFound).send({ message: 'Пользователь по указанному id не найден' });
+        throw new NotFound('Пользователь по указанному id не найден');
       } else {
         res.status(200).send(user);
       }
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
+      } else if (err instanceof NotFound) {
+        res.status(err.status).send({ message: err.message });
       } else {
-        res.status(InternalServerError).send({ message: err.message });
+        res.status(500).send({ message: 'Внутренняя ошибка сервера' });
       }
     });
 };
