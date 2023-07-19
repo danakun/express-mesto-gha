@@ -128,19 +128,24 @@ const getUsers = (req, res, next) => User.find({})
 
 const updateUser = (req, res) => {
   const { name, about } = req.body;
-  return User
-    .findByIdAndUpdate(
-      req.user._id,
-      { name, about },
-      { new: true, runValidators: true },
-    )
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequest('При обновлении профиля переданы некорректные данные'));
+  return User.findByIdAndUpdate(
+    req.user._id,
+    { name, about },
+    { new: true, runValidators: true },
+  )
+    .then((user) => {
+      if (!user) {
+        res.status(NotFound).send({ message: 'Пользователь по указанному id не найден' });
         return;
       }
-      next(new InternalServerError());
+      res.status(200).send({ data: user });
+    })
+    .catch((error) => {
+      if (error.name === 'CastError' || error.name === 'ValidationError') {
+        res.status(BadRequest).send({ message: 'Переданы некорректные данные' });
+      } else {
+        res.status(InternalServerError).send({ message: 'Внутренняя ошибка сервера' });
+      }
     });
 };
 
