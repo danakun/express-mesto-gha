@@ -41,28 +41,41 @@ const getUser = (req, res) => {
         res.status(500).send({ message: 'Внутренняя ошибка сервера' });
       }
     });
-};
+// };
 
-const updateUser = (req, res) => {
+// const updateUser = (req, res) => {
+//   const { name, about } = req.body;
+//   return User.findByIdAndUpdate(
+//     req.user._id,
+//     { name, about },
+//     { new: true, runValidators: true },
+//   )
+//     .then((user) => {
+//       if (!user) {
+//         res.status(NotFound).send({ message: 'Пользователь по указанному id не найден' });
+//         return;
+//       }
+//       res.status(200).send({ data: user });
+//     })
+//     .catch((error) => {
+//       if (error.name === 'CastError' || error.name === 'ValidationError') {
+//         res.status(BadRequest).send({ message: 'Переданы некорректные данные' });
+//       } else {
+//         res.status(InternalServerError).send({ message: 'Внутренняя ошибка сервера' });
+//       }
+//     });
+// };
+
+const updateUser = (req, res, next) => {
   const { name, about } = req.body;
-  return User.findByIdAndUpdate(
-    req.user._id,
-    { name, about },
-    { new: true, runValidators: true },
-  )
-    .then((user) => {
-      if (!user) {
-        res.status(NotFound).send({ message: 'Пользователь по указанному id не найден' });
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequest('Переданы некорректные данные при обновлении профиля'));
         return;
       }
-      res.status(200).send({ data: user });
-    })
-    .catch((error) => {
-      if (error.name === 'CastError' || error.name === 'ValidationError') {
-        res.status(BadRequest).send({ message: 'Переданы некорректные данные' });
-      } else {
-        res.status(InternalServerError).send({ message: 'Внутренняя ошибка сервера' });
-      }
+      next(new InternalServerError());
     });
 };
 
