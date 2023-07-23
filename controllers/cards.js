@@ -5,11 +5,21 @@ const {
   InternalServerError,
 } = require('./users');
 
+const getCards = (req, res) => Card
+  .find({})
+  .then((cards) => res.status(200).send(cards))
+  .catch((error) => {
+    res.status(BadRequest).send({ message: `Некорректные данные: ${error}` });
+  });
+
+
 const createCard = (req, res) => {
+  console.log(req.params.userId);
+  const { _id } = req.user;
   const { name, link } = req.body;
   return Card
-    .create({ name, link, owner: req.user._id })
-    .then((crd) => res.status(201).send(crd))
+    .create({ name, link, owner: _id })
+    .then((card) => res.status(201).send(card))
     .catch((error) => {
       if (error.name === 'ValidationError') {
         res.status(BadRequest).send({
@@ -21,8 +31,9 @@ const createCard = (req, res) => {
     });
 };
 
-const deleteCard = (req, res) => Card
-  .findByIdAndRemove(req.params.cardId)
+const deleteCard = (req, res) => 
+// console.log(req.user._id);
+Card.findByIdAndRemove(req.params.cardId)
   .then((card) => {
     if (!card) {
       res.status(NotFound).send({ message: 'Карточка не найдена' });
@@ -40,15 +51,8 @@ const deleteCard = (req, res) => Card
     }
   });
 
-const getCards = (req, res) => Card
-  .find({})
-  .then((cards) => res.status(200).send(cards))
-  .catch((error) => {
-    res.status(BadRequest).send({ message: `Некорректные данные: ${error}` });
-  });
-
-const likeCard = (req, res) => Card
-  .findByIdAndUpdate(
+const likeCard = (req, res) => 
+ Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
@@ -68,8 +72,8 @@ const likeCard = (req, res) => Card
     }
   });
 
-const dislikeCard = (req, res) => Card
-  .findByIdAndUpdate(
+const dislikeCard = (req, res) => 
+Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
     { new: true },
@@ -92,3 +96,7 @@ const dislikeCard = (req, res) => Card
 module.exports = {
   createCard, deleteCard, getCards, likeCard, dislikeCard,
 };
+
+// module.exports.createCard = (req, res) => {
+//   console.log(req.user._id); // _id станет доступен
+// }; 
