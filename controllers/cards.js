@@ -1,4 +1,4 @@
-const card = require('../models/card');
+const Card = require('../models/card');
 const {
   NotFound,
   BadRequest,
@@ -7,7 +7,7 @@ const {
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
-  return card
+  return Card
     .create({ name, link, owner: req.user._id })
     .then((crd) => res.status(201).send(crd))
     .catch((error) => {
@@ -21,14 +21,14 @@ const createCard = (req, res) => {
     });
 };
 
-const deleteCard = (req, res) => card
+const deleteCard = (req, res) => Card
   .findByIdAndRemove(req.params.cardId)
-  .then((crd) => {
-    if (!crd) {
+  .then((card) => {
+    if (!card) {
       res.status(NotFound).send({ message: 'Карточка не найдена' });
       return;
     }
-    res.send({ data: crd });
+    res.send({ data: card });
   })
   .catch((error) => {
     if (error.name === 'CastError') {
@@ -40,25 +40,25 @@ const deleteCard = (req, res) => card
     }
   });
 
-const getCards = (req, res) => card
+const getCards = (req, res) => Card
   .find({})
   .then((cards) => res.status(200).send(cards))
   .catch((error) => {
     res.status(BadRequest).send({ message: `Некорректные данные: ${error}` });
   });
 
-const likeCard = (req, res) => card
+const likeCard = (req, res) => Card
   .findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-  .then((crd) => {
-    if (!crd) {
+  .then((card) => {
+    if (!card) {
       res.status(NotFound).send({ message: 'Карточка не найдена' });
       return;
     }
-    res.send({ data: crd });
+    res.send({ data: card });
   })
   .catch((error) => {
     if (error.name === 'CastError') {
@@ -68,18 +68,18 @@ const likeCard = (req, res) => card
     }
   });
 
-const dislikeCard = (req, res) => card
+const dislikeCard = (req, res) => Card
   .findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-  .then((crd) => {
-    if (!crd) {
+  .then((card) => {
+    if (!card) {
       res.status(NotFound).send({ message: 'Карточка не найдена' });
       return;
     }
-    res.send({ data: crd });
+    res.send({ data: card });
   })
   .catch((error) => {
     if (error.name === 'CastError') {

@@ -20,7 +20,7 @@
   "homepage": "https://github.com/danakun/express-mesto-gha#readme",
   "dependencies": {
     "express": "^4.18.2",
-    "mongoose": "^7.0.1"
+    "mongoose": "^7.4.0"
   },
   "devDependencies": {
     "eslint": "^8.2.0",

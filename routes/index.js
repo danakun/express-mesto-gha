@@ -3,9 +3,9 @@
 
 // const path = require('path');
 // const usersRouter = require('./routes/users');
-// // const cardsRouter = require('./routes/cards');
+//  const cardsRouter = require('./routes/cards');
 
-// // Слушаем 3000 порт
+//  Слушаем 3000 порт
 // const { PORT = 3000 } = process.env;
 // const app = express();
 

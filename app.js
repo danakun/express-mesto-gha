@@ -10,16 +10,18 @@ const cardsRouter = require('./routes/cards');
 const { PORT = 3000 } = process.env;
 const app = express();
 
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
+  useNewUrlParser: true,
+});
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
-// app.use('/users', usersRouter);
+
 app.use((req, res, next) => {
   req.user = {
-    _id: '6411a0175f26d1ed6a973834',
+    _id: '64bc0a9d42e557548b000e87',
   };
   next();
 });
