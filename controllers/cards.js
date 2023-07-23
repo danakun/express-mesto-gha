@@ -12,12 +12,11 @@ const getCards = (req, res) => Card
     res.status(BadRequest).send({ message: `Некорректные данные: ${error}` });
   });
 
-
 const createCard = (req, res) => {
-  //console.log(req.params.userId);
+  // console.log(req.params.userId);
   const { _id } = req.user;
   const { name, link } = req.body;
-  console.log(req.user._id)
+  console.log(req.user._id);
   return Card
     .create({ name, link, owner: _id })
     .then((card) => res.status(201).send(card))
@@ -32,9 +31,7 @@ const createCard = (req, res) => {
     });
 };
 
-const deleteCard = (req, res) => 
-// console.log(req.user._id);
-Card.findByIdAndRemove(req.params.cardId)
+const deleteCard = (req, res) => Card.findByIdAndRemove(req.params.cardId)
   .then((card) => {
     if (!card) {
       res.status(NotFound).send({ message: 'Карточка не найдена' });
@@ -52,12 +49,11 @@ Card.findByIdAndRemove(req.params.cardId)
     }
   });
 
-const likeCard = (req, res) => 
- Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $addToSet: { likes: req.user._id } },
-    { new: true },
-  )
+const likeCard = (req, res) => Card.findByIdAndUpdate(
+  req.params.cardId,
+  { $addToSet: { likes: req.user._id } },
+  { new: true },
+)
   .then((card) => {
     if (!card) {
       res.status(NotFound).send({ message: 'Карточка не найдена' });
@@ -73,12 +69,11 @@ const likeCard = (req, res) =>
     }
   });
 
-const dislikeCard = (req, res) => 
-Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $pull: { likes: req.user._id } },
-    { new: true },
-  )
+const dislikeCard = (req, res) => Card.findByIdAndUpdate(
+  req.params.cardId,
+  { $pull: { likes: req.user._id } },
+  { new: true },
+)
   .then((card) => {
     if (!card) {
       res.status(NotFound).send({ message: 'Карточка не найдена' });
@@ -100,4 +95,4 @@ module.exports = {
 
 // module.exports.createCard = (req, res) => {
 //   console.log(req.user._id); // _id станет доступен
-// }; 
+// };

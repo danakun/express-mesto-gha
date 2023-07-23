@@ -41,7 +41,7 @@ const getUser = (req, res) => {
         res.status(500).send({ message: 'Внутренняя ошибка сервера' });
       }
     });
- };
+};
 
 // const updateUser = (req, res) => {
 //   const { name, about } = req.body;
@@ -114,4 +114,3 @@ const updateAvatar = (req, res, next) => {
 module.exports = {
   createUser, getUser, getUsers, updateUser, updateAvatar,
 };
-
