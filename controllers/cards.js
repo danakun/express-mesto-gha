@@ -3,7 +3,6 @@ const NotFound = require('../errors/NotFound');
 const InternalServerError = require('../errors/InternalServerError');
 const BadRequest = require('../errors/BadRequest');
 
-
 const getCards = (req, res) => Card
   .find({})
   .then((cards) => res.status(200).send(cards))
