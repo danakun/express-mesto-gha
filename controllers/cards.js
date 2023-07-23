@@ -14,9 +14,10 @@ const getCards = (req, res) => Card
 
 
 const createCard = (req, res) => {
-  console.log(req.params.userId);
+  //console.log(req.params.userId);
   const { _id } = req.user;
   const { name, link } = req.body;
+  console.log(req.user._id)
   return Card
     .create({ name, link, owner: _id })
     .then((card) => res.status(201).send(card))
