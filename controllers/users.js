@@ -3,26 +3,6 @@ const NotFound = require('../errors/NotFound');
 const InternalServerError = require('../errors/InternalServerError');
 const BadRequest = require('../errors/BadRequest');
 
-const createUser = (req, res, next) => User.create(req.body)
-  .then((user) => res.status(201).send(user))
-  .catch((err) => {
-    if (err.name === 'ValidationError') {
-      next(new BadRequest('При создании пользователя переданы некорректные данные'));
-      res.status(400).send(err);
-    } else {
-      next(new InternalServerError());
-    }
-  });
-
-const getUsers = (req, res, next) => User.find({})
-  .orFail(() => {
-    throw new InternalServerError();
-  })
-  .then((users) => res.status(200).send(users))
-  .catch(() => {
-    next(new InternalServerError());
-  });
-
 const getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
@@ -41,6 +21,76 @@ const getUser = (req, res) => {
         res.status(500).send({ message: 'Внутренняя ошибка сервера' });
       }
     });
+};
+
+const getUsers = (req, res, next) => User.find({})
+  .orFail(() => {
+    throw new InternalServerError();
+  })
+  .then((users) => res.status(200).send(users))
+  .catch(() => {
+    next(new InternalServerError());
+  });
+
+const createUser = (req, res, next) => User.create(req.body)
+  .then((user) => res.status(201).send(user))
+  .catch((err) => {
+    if (err.name === 'ValidationError') {
+      next(new BadRequest('При создании пользователя переданы некорректные данные'));
+      res.status(400).send(err);
+    } else {
+      next(new InternalServerError());
+    }
+  });
+
+const updateUser = (req, res, next) => {
+  const { name, about } = req.body;
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+    .then((user) => {
+      if (!user) {
+        throw new NotFound('Пользователь по указанному id не найден');
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequest('Переданы некорректные данные при обновлении профиля'));
+      } else {
+        next(new InternalServerError());
+      }
+    });
+};
+
+// const updateAvatar = (req, res, next) => {
+//   const { avatar } = req.body;
+//     User
+//     .findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
+//     .then((user) => res.send(user))
+//     .catch((err) => {
+//       if (err.name === 'ValidationError') {
+//         next(new BadRequest('При обновлении аватара переданы некорректные данные'));
+//         return;
+//       }
+//       next(new InternalServerError());
+//     });
+// };
+
+const updateAvatar = (req, res, next) => {
+  const { avatar } = req.body;
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
+    .orFail(new NotFound('Пользователь по указанному id не найден'))
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequest('При обновлении аватара переданы некорректные данные'));
+      } else {
+        next(new InternalServerError());
+      }
+    });
+};
+
+module.exports = {
+  getUser, getUsers, createUser, updateUser, updateAvatar,
 };
 
 // const updateUser = (req, res) => {
@@ -78,39 +128,3 @@ const getUser = (req, res) => {
 //       next(new InternalServerError());
 //     });
 // };
-
-const updateUser = (req, res, next) => {
-  const { name, about } = req.body;
-  User.findByIdAndUpdate(req.params.userId, { name, about }, { new: true, runValidators: true })
-    .then((user) => {
-      if (!user) {
-        throw new NotFound('Пользователь по указанному id не найден');
-      }
-      res.send(user);
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequest('Переданы некорректные данные при обновлении профиля'));
-      } else {
-        next(new InternalServerError());
-      }
-    });
-};
-
-const updateAvatar = (req, res, next) => {
-  const { avatar } = req.body;
-  return User
-    .findByIdAndUpdate(req.params.userId, { avatar }, { new: true })
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequest('При обновлении аватара переданы некорректные данные'));
-        return;
-      }
-      next(new InternalServerError());
-    });
-};
-
-module.exports = {
-  createUser, getUser, getUsers, updateUser, updateAvatar,
-};

@@ -90,7 +90,7 @@ const dislikeCard = (req, res) => Card.findByIdAndUpdate(
   });
 
 module.exports = {
-  createCard, deleteCard, getCards, likeCard, dislikeCard,
+  getCards, createCard, deleteCard, likeCard, dislikeCard,
 };
 
 // module.exports.createCard = (req, res) => {

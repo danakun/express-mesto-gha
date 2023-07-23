@@ -25,6 +25,7 @@ app.use((req, res, next) => {
   };
   next();
 });
+
 //   app.use('*', (req, res, next) => next(
 //     res.status(NotFound).send({ message: 'Страница не найдена' }),
 //   ));
