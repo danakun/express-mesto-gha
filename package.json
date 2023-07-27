@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/danakun/express-mesto-gha.git"
   },
-  "author": "Dana Kun",
+  "author": "Dana Liepinsh",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/danakun/express-mesto-gha/issues"
