@@ -44,7 +44,6 @@ const getUser = (req, res) => {
           message: 'Пользователь по указанному id не найден',
         });
       }
-
       return res
         .status(INTERNAL_SERVER_ERROR)
         .send({
@@ -62,19 +61,19 @@ const getUsers = (req, res) => User.find({})
     res.status(INTERNAL_SERVER_ERROR).send({ message: 'Внутренняя ошибка сервера' });
   });
 
-const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
-    .then((user) => res.status(CREATED).send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send('При создании пользователя переданы некорректные данные').send(err);
-      } else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Внутренняя ошибка сервера' });
-      }
-    });
-};
-
+  const createUser = (req, res) => {
+    const { name, about, avatar } = req.body;
+    User.create({ name, about, avatar })
+      .then((user) => res.status(CREATED).send(user))
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          res.status(BAD_REQUEST).send('При создании пользователя переданы некорректные данные');
+        } else {
+          res.status(INTERNAL_SERVER_ERROR).send({ message: 'Внутренняя ошибка сервера' });
+        }
+      });
+  };
+  
 const updateUser = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
