@@ -9,29 +9,10 @@ const { BAD_REQUEST } = require('../utils/constants');
 const { NOT_FOUND } = require('../utils/constants');
 const { INTERNAL_SERVER_ERROR } = require('../utils/constants');
 
-// const getUser = (req, res) => {
-//   User.findById(req.params.userId)
-//     .then((user) => {
-//       if (!user) {
-//         throw new NotFound('Пользователь по указанному id не найден');
-//       } else {
-//         res.status(200).send(user);
-//       }
-//     })
-//     .catch((err) => {
-//       if (err.name === 'CastError' || err.name === 'ValidationError') {
-//         res.status(BadRequest).send({ message: 'Переданы некорректные данные' });
-//       } else if (err instanceof NotFound) {
-//         res.status(err.status).send({ message: err.message });
-//       } else {
-//         res.status(InternalServerError).send({ message: 'Внутренняя ошибка сервера' });
-//       }
-//     });
-// };
 const getUser = (req, res) => {
   User.findById(req.params.userId)
     .orFail()
-    .then((user) => res.status(SUCCESS).send(user))
+    .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({
@@ -61,19 +42,19 @@ const getUsers = (req, res) => User.find({})
     res.status(INTERNAL_SERVER_ERROR).send({ message: 'Внутренняя ошибка сервера' });
   });
 
-  const createUser = (req, res) => {
-    const { name, about, avatar } = req.body;
-    User.create({ name, about, avatar })
-      .then((user) => res.status(CREATED).send(user))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          res.status(BAD_REQUEST).send('При создании пользователя переданы некорректные данные');
-        } else {
-          res.status(INTERNAL_SERVER_ERROR).send({ message: 'Внутренняя ошибка сервера' });
-        }
-      });
-  };
-  
+const createUser = (req, res) => {
+  const { name, about, avatar } = req.body;
+  User.create({ name, about, avatar })
+    .then((user) => res.status(CREATED).send(user))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send('При создании пользователя переданы некорректные данные');
+      } else {
+        res.status(500).send('Внутренняя ошибка сервера');
+      }
+    });
+};
+
 const updateUser = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
@@ -178,3 +159,46 @@ module.exports = {
 //       }
 //     });
 // };
+
+// const getUser = (req, res) => {
+//   User.findById(req.params.userId)
+//     .then((user) => {
+//       if (!user) {
+//         throw new NotFound('Пользователь по указанному id не найден');
+//       } else {
+//         res.status(200).send(user);
+//       }
+//     })
+//     .catch((err) => {
+//       if (err.name === 'CastError' || err.name === 'ValidationError') {
+//         res.status(BadRequest).send({ message: 'Переданы некорректные данные' });
+//       } else if (err instanceof NotFound) {
+//         res.status(err.status).send({ message: err.message });
+//       } else {
+//         res.status(InternalServerError).send({ message: 'Внутренняя ошибка сервера' });
+//       }
+//     });
+// };
+
+// const createUser = (req, res) => {
+//   User.create(req.body)
+//     .then((user) => res.status(201).send(user))
+//     .catch((err) => {
+//       if (err.name === 'ValidationError') {
+//         res.status(BAD_REQUEST).send('При создании пользователя переданы некорректные данные');
+//       } else {
+//         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Внутренняя ошибка сервера' });
+//       }
+//     });
+// };
+
+// const createUser = (req, res, next) => User.create(req.body)
+// .then((user) => res.status(201).send(user))
+// .catch((err) => {
+//   if (err.name === 'ValidationError') {
+//     next(res.status(400).send('При создании пользователя переданы некорректные данные'));
+//     res.status(400).send(err);
+//   } else {
+//     next(res.status(500).send('Внутренняя ошибка сервера'));
+//   }
+// });

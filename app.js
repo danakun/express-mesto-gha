@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const express = require('express');
 // const path = require('path');
 const routes = require('./routes/index');
-// const usersRouter = require('./routes/users');
-// const cardsRouter = require('./routes/cards');
+//  const usersRouter = require('./routes/users');
+//  const cardsRouter = require('./routes/cards');
 // const { NotFound } = require('./errors/NotFound');
 
 // Слушаем 3000 порт
