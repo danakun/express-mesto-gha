@@ -10,12 +10,12 @@ router.use('/users', userRouter);
 router.use('/cards', cardRouter);
 
 // Обработка запросов несуществующих маршрутов
-router.use('/*', (req, res) => {
-  res.status(NOT_FOUND).send({ message: 'Страница не найдена.' });
-});
+// router.use('/*', (req, res) => {
+//   res.status(NOT_FOUND).send({ message: 'Страница не найдена.' });
+// });
 
 //   app.use('*', (req, res, next) => next(
-//     res.status(NotFound).send({ message: 'Страница не найдена' }),
+//     res.status(NOT_FOUND).send({ message: 'Страница не найдена' }),
 //   ));
 //   next();
 // });

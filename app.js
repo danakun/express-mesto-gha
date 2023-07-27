@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const express = require('express');
 // const path = require('path');
-const routes = require('./routes/index');
+const router = require('./routes/index');
 //  const usersRouter = require('./routes/users');
 //  const cardsRouter = require('./routes/cards');
 // const { NotFound } = require('./errors/NotFound');
@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 });
 
 // Подключение маршрутов
-app.use(routes);
+app.use(router);
 // app.use('/', usersRouter);
 // app.use('/', cardsRouter);
 
@@ -38,4 +38,4 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
 
-// changed the order of use routes to check if it should be after use id !!!!!!!!!!!!!!
+
