@@ -81,14 +81,13 @@ const dislikeCard = (req, res) => Card.findByIdAndUpdate(
       res.status(NOT_FOUND).send({ message: 'Карточка не найдена' });
       return;
     }
-    res.send({ data: card });
+    res.status(SUCCESS).send(card);
   })
   .catch((error) => {
-    if (error.name === 'CastError') {
-      res.status(BAD_REQUEST).send({ message: `Пользователь не найден: ${error}` });
-    } else {
-      res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка сервера' });
+    if (error) {
+      return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
     }
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: error.message });
   });
 
 module.exports = {
