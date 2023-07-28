@@ -25,12 +25,12 @@ const createCard = (req, res) => {
     .create({ name, link, owner })
     .then((card) => res.status(CREATED).send(card))
     .catch((error) => {
-      if (error.name === 'ValidationError') {
+      if (error.name === 'CastError' || error.name === 'ValidationError') {
         res.status(BAD_REQUEST).send({
           message: 'Переданы некорректные данные при создании карточки',
         });
       } else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка сервера' });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: error.message });
       }
     });
 };
@@ -61,13 +61,13 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
       res.status(NOT_FOUND).send({ message: 'Карточка не найдена' });
       return;
     }
-    res.send({ data: card });
+    res.status(SUCCESS).send(card);
   })
   .catch((error) => {
-    if (error.name === 'CastError') {
+    if (error) {
       res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
     } else {
-      res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка сервера' });
+      res.status(INTERNAL_SERVER_ERROR).send({ message: error.message });
     }
   });
 

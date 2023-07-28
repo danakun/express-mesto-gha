@@ -14,7 +14,7 @@ const getUser = (req, res) => {
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({
           message: 'Переданы некорректные данные',
         });
@@ -36,25 +36,26 @@ const getUser = (req, res) => {
 
 // Получение всех пользователей
 const getUsers = (req, res) => User.find({})
-  .orFail()
-  .then((users) => res.status(200).send(users))
-  .catch(() => {
-    res.status(INTERNAL_SERVER_ERROR).send({ message: 'Внутренняя ошибка сервера' });
+  .then((users) => res.status(SUCCESS).send(users))
+  .catch((err) => {
+    res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
   });
 
+// Создание пользователя
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
     .then((user) => res.status(CREATED).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send('При создании пользователя переданы некорректные данные');
+        res.status(400).send({ message: 'При создании пользователя переданы некорректные данные' });
       } else {
-        res.status(500).send('Внутренняя ошибка сервера');
+        res.status(500).send({ message: err.message });
       }
     });
 };
 
+// Редактирование пользователя
 const updateUser = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
@@ -63,11 +64,11 @@ const updateUser = (req, res) => {
       res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         const validationErrors = Object.values(err.errors).map((error) => error.message);
         res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля', validationErrors });
       } else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Внутренняя ошибка сервера' });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
       }
     });
 };
@@ -78,10 +79,10 @@ const updateAvatar = (req, res) => {
     .orFail()
     .then((user) => res.status(SUCCESS).send(user))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         res.status(BAD_REQUEST).send({ message: 'При обновлении аватара переданы некорректные данные' });
       } else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Внутренняя ошибка сервера' });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
       }
     });
 };
