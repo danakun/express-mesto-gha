@@ -1,7 +1,4 @@
 const Card = require('../models/card');
-// const NotFound = require('../errors/NotFound');
-// const InternalServerError = require('../errors/InternalServerError');
-// const BadRequest = require('../errors/BadRequest');
 
 const { SUCCESS } = require('../utils/constants');
 const { CREATED } = require('../utils/constants');
@@ -17,8 +14,6 @@ const getCards = (req, res) => Card
   });
 
 const createCard = (req, res) => {
-  // console.log(req.params.userId);
-  // const { _id } = req.user;
   const owner = req.user._id;
   const { name, link } = req.body;
   return Card
@@ -93,7 +88,3 @@ const dislikeCard = (req, res) => Card.findByIdAndUpdate(
 module.exports = {
   getCards, createCard, deleteCard, likeCard, dislikeCard,
 };
-
-// module.exports.createCard = (req, res) => {
-//   console.log(req.user._id); // _id станет доступен
-// };

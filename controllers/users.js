@@ -1,7 +1,4 @@
 const User = require('../models/user');
-// const NotFound = require('../errors/NotFound');
-// const InternalServerError = require('../errors/InternalServerError');
-// const BadRequest = require('../errors/BadRequest');
 
 const { SUCCESS } = require('../utils/constants');
 const { CREATED } = require('../utils/constants');
@@ -12,7 +9,7 @@ const { INTERNAL_SERVER_ERROR } = require('../utils/constants');
 const getUser = (req, res) => {
   User.findById(req.params.userId)
     .orFail()
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.status(SUCCESS).send(user))
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({
@@ -48,9 +45,9 @@ const createUser = (req, res) => {
     .then((user) => res.status(CREATED).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'При создании пользователя переданы некорректные данные' });
+        res.status(BAD_REQUEST).send({ message: 'При создании пользователя переданы некорректные данные' });
       } else {
-        res.status(500).send({ message: err.message });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
       }
     });
 };
@@ -90,116 +87,3 @@ const updateAvatar = (req, res) => {
 module.exports = {
   getUser, getUsers, createUser, updateUser, updateAvatar,
 };
-
-// const updateAvatar = (req, res, next) => {
-//   const { avatar } = req.body;
-//     User
-//     .findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
-//     .then((user) => res.send(user))
-//     .catch((err) => {
-//       if (err.name === 'ValidationError') {
-//         next(new BadRequest('При обновлении аватара переданы некорректные данные'));
-//         return;
-//       }
-//       next(new InternalServerError());
-//     });
-// };
-
-// const updateUser = (req, res) => {
-//   const { name, about } = req.body;
-//   return User.findByIdAndUpdate(
-//     req.user._id,
-//     { name, about },
-//     { new: true, runValidators: true },
-//   )
-//     .then((user) => {
-//       if (!user) {
-//         res.status(NotFound).send({ message: 'Пользователь по указанному id не найден' });
-//         return;
-//       }
-//       res.status(200).send({ data: user });
-//     })
-//     .catch((error) => {
-//       if (error.name === 'CastError' || error.name === 'ValidationError') {
-//         res.status(BadRequest).send({ message: 'Переданы некорректные данные' });
-//       } else {
-//         res.status(InternalServerError).send({ message: 'Внутренняя ошибка сервера' });
-//       }
-//     });
-// };
-
-// const updateUser = (req, res, next) => {
-//   const { name, about } = req.body;
-//   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-//     .then((user) => res.send(user))
-//     .catch((err) => {
-//       if (err.name === 'ValidationError') {
-//         next(new BadRequest('Переданы некорректные данные при обновлении профиля'));
-//         return;
-//       }
-//       next(new InternalServerError());
-//     });
-// };
-// Получение пользователя по его id
-// const getUser = (req, res) => {
-//   User.findById(req.params.userId)
-//     .then((user) => {
-//       if (!user) {
-//         throw new NotFound('Пользователь по указанному id не найден');
-//       } else {
-//         res.status(200).send(user);
-//       }
-//     })
-//     .catch((err) => {
-//       if (err.name === 'CastError' || err.name === 'ValidationError') {
-//         res.status(400).send({ message: 'Переданы некорректные данные' });
-//       } else if (err instanceof NotFound) {
-//         res.status(err.status).send({ message: err.message });
-//       } else {
-//         res.status(500).send({ message: 'Внутренняя ошибка сервера' });
-//       }
-//     });
-// };
-
-// const getUser = (req, res) => {
-//   User.findById(req.params.userId)
-//     .then((user) => {
-//       if (!user) {
-//         throw new NotFound('Пользователь по указанному id не найден');
-//       } else {
-//         res.status(200).send(user);
-//       }
-//     })
-//     .catch((err) => {
-//       if (err.name === 'CastError' || err.name === 'ValidationError') {
-//         res.status(BadRequest).send({ message: 'Переданы некорректные данные' });
-//       } else if (err instanceof NotFound) {
-//         res.status(err.status).send({ message: err.message });
-//       } else {
-//         res.status(InternalServerError).send({ message: 'Внутренняя ошибка сервера' });
-//       }
-//     });
-// };
-
-// const createUser = (req, res) => {
-//   User.create(req.body)
-//     .then((user) => res.status(201).send(user))
-//     .catch((err) => {
-//       if (err.name === 'ValidationError') {
-//         res.status(BAD_REQUEST).send('При создании пользователя переданы некорректные данные');
-//       } else {
-//         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Внутренняя ошибка сервера' });
-//       }
-//     });
-// };
-
-// const createUser = (req, res, next) => User.create(req.body)
-// .then((user) => res.status(201).send(user))
-// .catch((err) => {
-//   if (err.name === 'ValidationError') {
-//     next(res.status(400).send('При создании пользователя переданы некорректные данные'));
-//     res.status(400).send(err);
-//   } else {
-//     next(res.status(500).send('Внутренняя ошибка сервера'));
-//   }
-// });
