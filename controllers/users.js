@@ -70,7 +70,7 @@ const createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequest('Переданы некорректные данные'));
+        next(new BadRequest('Переданы некорректные почему-то данные'));
         return;
       }
       if (err.code === 11000) {
@@ -136,3 +136,47 @@ const updateAvatar = (req, res, next) => {
 module.exports = {
   getUser, getUsers, createUser, login, updateUser, updateAvatar,
 };
+
+// function createUser(req, res, next) {
+//   const {
+//     email, password, name, about, avatar,
+//   } = req.body;
+
+//   bcrypt
+//     .hash(password, 10)
+//     .then((hash) => User.create({
+//       email,
+//       password: hash,
+//       name,
+//       about,
+//       avatar,
+//     }))
+//     .then((user) => {
+//       const { _id } = user;
+
+//       return res.status(CREATED).send({
+//         email,
+//         name,
+//         about,
+//         avatar,
+//         _id,
+//       });
+//     })
+//     .catch((err) => {
+//       if (err.code === 11000) {
+//         next(
+//           new Conflict(
+//             'Пользователь с данным электронным адресом уже зарегистрирован',
+//           ),
+//         );
+//       } else if (err.name === 'ValidationError') {
+//         next(
+//           new BadRequest(
+//             'Передача некорректных данные при регистрации пользователя',
+//           ),
+//         );
+//       } else {
+//         next(err);
+//       }
+//     });
+// }
