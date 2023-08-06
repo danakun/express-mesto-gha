@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 // const validator = require('validator');
-const isEmail = require('validator/lib/isEmail');
+const { isMail } = require('../utils/constants');
 const Unauthorized = require('../errors/Unauthorized');
 
 const userSchema = new mongoose.Schema({
@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   },
   about: {
     type: String,
-    default: 'Исследователь океана',
+    default: 'Исследователь',
     minLength: 2,
     maxLength: 30,
   },
@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: {
-      validator: isEmail,
+      validator: isMail,
       message: 'Введите электронный адрес',
     },
   },

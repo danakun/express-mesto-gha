@@ -1,7 +1,7 @@
 const { Joi, celebrate } = require('celebrate');
 const validator = require('validator');
-
 const { ObjectId } = require('mongoose').Types;
+const { isMail } = require('../utils/constants');
 
 // User login validation
 const validateLogin = celebrate({
@@ -11,7 +11,7 @@ const validateLogin = celebrate({
   }),
 });
 
-// id Validation at sign up
+// id Validation
 const validateId = celebrate({
   params: Joi.object().keys({
     id: Joi.string().required().custom((value, helpers) => {
@@ -20,6 +20,17 @@ const validateId = celebrate({
       }
       return helpers.message('id не валиден');
     }),
+  }),
+});
+
+// sign up validation
+const validateSignUp = celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(6),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().pattern(isMail),
   }),
 });
 
@@ -78,5 +89,5 @@ const validateCard = celebrate({
 //   params: Joi.object().keys({ cardId: Joi.string().length(24).hex() }) });
 
 module.exports = {
-  validateId, validateUser, validateAvatar, validateCard, validateLogin,
+  validateId, validateUser, validateAvatar, validateCard, validateLogin, validateSignUp,
 };
