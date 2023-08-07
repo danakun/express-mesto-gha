@@ -7,7 +7,7 @@ const { isMail } = require('../utils/constants');
 const validateLogin = celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
-    password: Joi.string().required(),
+    password: Joi.string().required().min(8),
   }),
 });
 
@@ -80,9 +80,9 @@ const validateCard = celebrate({
   }),
 });
 
-// const validateLikes = celebrate({
-//   params: Joi.object().keys({ cardId: Joi.string().length(24).hex() }) });
+const validateLikes = celebrate({
+  params: Joi.object().keys({ cardId: Joi.string().length(24).hex() }) });
 
 module.exports = {
-  validateId, validateUser, validateAvatar, validateCard, validateLogin, validateSignUp,
+  validateId, validateUser, validateAvatar, validateCard, validateLogin, validateSignUp, validateLikes
 };

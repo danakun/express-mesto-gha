@@ -8,9 +8,8 @@ const auth = (req, res, next) => {
   const errorMessage = 'Необходима авторизация';
   // Проверка авторизации
   if (!authorization || !authorization.startsWith(bearer)) {
-    next(new Unauthorized(`${errorMessage}(${authorization})!!!`));
-    // next(new Unauthorized('Необходима авторизация')
-    return;
+     return next(new Unauthorized(`${errorMessage}(${authorization})!!!`));
+    // next(new Unauthorized('Необходима авторизация'));
   }
 
   const token = authorization.replace(bearer, '');
@@ -18,7 +17,7 @@ const auth = (req, res, next) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, JWT_SECRET); // Верифицикация токена с помощью секретного ключа
+    payload = jwt.verify(token, JWT_SECRET); // Верифицикация токена с помощью ключа
   } catch (err) {
     next(
       new Unauthorized('Необходимо авторизироваться'),

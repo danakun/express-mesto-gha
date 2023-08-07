@@ -17,9 +17,10 @@ const BadRequest = require('../errors/BadRequest');
 const Conflict = require('../errors/Conflict');
 
 const getUser = (req, res, next) => {
-  User.findById(req.params.userId)
+  const { id } = req.params;
+  User.findById(id)
     .orFail(() => new NotFound('В базе отсутствует пользователь по заданному id'))
-    .then((user) => res.status(SUCCESS).send(user))
+    .then((user) => res.status(SUCCESS).send({ user }))
     .catch((err) => {
       if (err.kind === 'ObjectId') {
         next(new BadRequest('Передан невалидный id'));
@@ -47,7 +48,7 @@ const getUser = (req, res, next) => {
 
 // Получение всех пользователей
 const getUsers = (req, res, next) => User.find({})
-  .then((users) => res.status(SUCCESS).send(users))
+  .then((users) => res.status(SUCCESS).send({ users }))
   .catch((err) => next(err));
 // res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
 
@@ -92,9 +93,8 @@ const login = (req, res, next) => {
         JWT_SECRET,
         { expiresIn: '7d' },
       );
-      const greeting = `Welcome back, ${user.name}!`;
-
-      res.send({ token, greeting });
+      // const greeting = `Welcome back, ${user.name}!`;
+      res.send({ token });
     })
     .catch(next);
 };
@@ -113,7 +113,6 @@ const updateUser = (req, res, next) => {
         next(new BadRequest(validationErrors));
       } else {
         next(err);
-        // es.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
       }
     });
 };
@@ -128,7 +127,6 @@ const updateAvatar = (req, res, next) => {
         next(new BadRequest('Переданы некорректные данные'));
       } else {
         next(err);
-        // res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
       }
     });
 };
