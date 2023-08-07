@@ -9,7 +9,7 @@ const auth = (req, res, next) => {
   if (!authorization || !authorization.startsWith('Bearer ')) {
     // next(new Unauthorized(`${errorMessage}(${authorization})!`),
     // Выбрасываем ошибку через централизованный метод ошибок
-    next(new Unauthorized({ message: 'Необходима авторизация' }));
+    next(new Unauthorized('Необходима авторизация'));
   }
 
   const token = authorization.replace('Bearer ', '');
@@ -19,7 +19,7 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_SECRET); // Верифицикация токена с помощью секретного ключа
   } catch (err) {
-    return next(new Unauthorized({ message: 'Необходима авторизация' }));
+    return next(new Unauthorized('Необходима авторизация')); // { message: 'Необходима авторизация' }
   }
   req.user = payload; // Данные пользователя передаются в объект запроса
 
