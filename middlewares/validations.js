@@ -1,6 +1,6 @@
 const { Joi, celebrate } = require('celebrate');
 const validator = require('validator');
-const { ObjectId } = require('mongoose').Types;
+// const { ObjectId } = require('mongoose').Types;
 const { isMail } = require('../utils/constants');
 
 // User login validation
@@ -14,12 +14,7 @@ const validateLogin = celebrate({
 // id Validation
 const validateId = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().required().custom((value, helpers) => {
-      if (ObjectId.isValid(value)) {
-        return value;
-      }
-      return helpers.message('id не валиден');
-    }),
+    id: Joi.string().length(24).hex().required(),
   }),
 });
 

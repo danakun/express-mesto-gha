@@ -70,7 +70,7 @@ const createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequest('Переданы некорректные почему-то данные'));
+        next(new BadRequest('Переданы некорректные данные'));
         return;
       }
       if (err.code === 11000) {

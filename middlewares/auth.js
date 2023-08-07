@@ -5,11 +5,11 @@ const Unauthorized = require('../errors/Unauthorized');
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
   const bearer = 'Bearer ';
-   const errorMessage = 'Необходима авторизация';
+  const errorMessage = 'Необходима авторизация';
   // Проверка авторизации
   if (!authorization || !authorization.startsWith(bearer)) {
-    next(new Unauthorized(`${errorMessage}(${authorization})!`));
-    //next(new Unauthorized('Необходима авторизация')
+    next(new Unauthorized(`${errorMessage}(${authorization})!!!`));
+    // next(new Unauthorized('Необходима авторизация')
     return;
   }
 
@@ -20,17 +20,16 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_SECRET); // Верифицикация токена с помощью секретного ключа
   } catch (err) {
-    return next(
-new Unauthorized('Необходима авторизация')); // { message: 'Необходима авторизация' }
+    next(
+      new Unauthorized('Необходимо авторизироваться'),
+    ); // { message: 'Необходима авторизация' }
+    return;
   }
   req.user = payload; // Данные пользователя передаются в объект запроса
-
-  return next();
+  next();
 };
 
 module.exports = auth;
-
-
 
 // const auth = (req, res, next) => {
 //   const { authorization } = req.headers;

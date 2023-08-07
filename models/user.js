@@ -23,8 +23,8 @@ const userSchema = new Schema(
       required: true,
       select: false,
       validate: {
-        validator: ({ length }) => length >= 6,
-        message: 'Пароль должен состоять минимум из 6 символов',
+        validator: ({ length }) => length >= 8,
+        message: 'Пароль должен состоять минимум из 8 символов',
       },
     },
 
