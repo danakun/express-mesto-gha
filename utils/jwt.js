@@ -1,6 +1,5 @@
-// const jwt = require('jsonwebtoken');
-
-// const JWT_SECRET = 'verystrongpassword';
+const JWT_SECRET = 'verystrongpassword';
+// 96e59903448963a887efb5056d460b2beaa4cec541d28eec1dac84e5b9c5a615
 
 // const getJwtToken = (id) => jwt.sign({ id }, JWT_SECRET);
 
@@ -14,7 +13,7 @@
 //   }
 // };
 
-// module.exports = { getJwtToken, isAuthorized };
+module.exports = { JWT_SECRET };
 
 // const jwt = require('jsonwebtoken');
 

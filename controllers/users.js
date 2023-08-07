@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = 'verystrongpassword';
+const { JWT_SECRET } = require('../utils/jwt');
 
 const SALT_ROUNDS = 10;
 
