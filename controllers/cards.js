@@ -34,10 +34,10 @@ const deleteCard = (req, res, next) => {
       if (JSON.stringify(req.user._id) !== JSON.stringify(card.owner)) {
         return next(new AccessForbidden('Чужую карточку нельзя удалить'));
       }
-      return card.deleteOne();
+      return card.remove();
     }) // return card.remove()
     .then((card) => {
-      res.status(SUCCESS).send({ card }); // { data: card }
+      res.send({ card }); // { data: card }
     })
     .catch((error) => {
       if (error.name === 'CastError') {
