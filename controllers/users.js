@@ -17,18 +17,26 @@ const BadRequest = require('../errors/BadRequest');
 const Conflict = require('../errors/Conflict');
 
 const getUser = (req, res, next) => {
-  const { id } = req.params;
-  const userId = req.user._id;
+  const { userId } = req.params;
+  const loggedInUserId = req.user._id.toString();
 
-  // проверка для getMe
-  const targetUserId = id === 'me' ? userId : id;
+  const targetUserId = userId === 'me' ? loggedInUserId : userId;
 
   User.findById(targetUserId)
-    .orFail(() => new NotFound('В базе отсутствует пользователь по заданному id'))
-    .then((user) => res.status(SUCCESS).send({ user }))
+    .orFail(() => new NotFound('User not found'))
+    .then((user) => {
+      const userResponse = {
+        _id: user._id.toString(),
+        email: user.email,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+      };
+      res.status(SUCCESS).send(userResponse);
+    })
     .catch((err) => {
       if (err.kind === 'ObjectId') {
-        next(new BadRequest('Передан невалидный id'));
+        next(new BadRequest('Invalid user ID'));
       } else {
         next(err);
       }
