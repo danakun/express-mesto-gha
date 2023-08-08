@@ -31,19 +31,20 @@ const deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .orFail(() => new NotFound('Карточки по заданному id не найдено'))
     .then((card) => {
-      if (JSON.stringify(req.user._id) !== JSON.stringify(card.owner)) {
-        return next(new AccessForbidden('Чужую карточку нельзя удалить'));
+      if (`${card.owner}` !== req.user._id) {
+        throw new AccessForbidden('Чужую карточку нельзя удалить');
       }
-      return card.remove();
+      return Card.findByIdAndRemove(req.params.cardId);
     }) // return card.remove()
     .then((card) => {
-      res.send({ card }); // { data: card }
+      res.send(card); // { data: card }
     })
     .catch((error) => {
       if (error.name === 'CastError') {
         return next(new BadRequest('Невалидный id карточки'));
       }
-      return next(error);
+      next(error);
+      return null;
     });
 };
 
