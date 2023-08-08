@@ -28,24 +28,22 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  const { id } = req.params.cardId;
-  Card.findById(id)
+  Card.findById(req.params.cardId)
     .orFail(() => new NotFound('Карточки по заданному id не найдено'))
     .then((card) => {
-      if (`${card.owner}` !== req.user._id) {
+      if (JSON.stringify(req.user._id) !== JSON.stringify(card.owner)) {
         return next(new AccessForbidden('Чужую карточку нельзя удалить'));
       }
-      return Card.findByIdAndRemove(req.params.cardId);
+      return card.deleteOne();
     }) // return card.remove()
     .then((card) => {
-      res.status(SUCCESS).send(card); // { data: card }
+      res.status(SUCCESS).send({ card }); // { data: card }
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        next(new BadRequest('Невалидный id карточки'));
-      } else {
-        next(error);
+        return next(new BadRequest('Невалидный id карточки'));
       }
+      return next(error);
     });
 };
 
