@@ -77,7 +77,7 @@ const validateCard = celebrate({
       .messages({
         'string.required': 'Поле link должно быть заполнено',
       }),
-  }),
+  }).unknown(true),
 });
 
 const validateLikes = celebrate({
