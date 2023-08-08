@@ -18,20 +18,39 @@ const Conflict = require('../errors/Conflict');
 
 const getUser = (req, res, next) => {
   const { id } = req.params;
-  User.findById(id)
+  const userId = req.user._id;
+
+  // проверка для getMe
+  const targetUserId = id === 'me' ? userId : id;
+
+  User.findById(targetUserId)
     .orFail(() => new NotFound('В базе отсутствует пользователь по заданному id'))
     .then((user) => res.status(SUCCESS).send({ user }))
     .catch((err) => {
       if (err.kind === 'ObjectId') {
         next(new BadRequest('Передан невалидный id'));
-        // return res.status(BAD_REQUEST).send({
-        //   message: 'Переданы некорректные данные',
-        // });
       } else {
         next(err);
       }
     });
 };
+
+// const getUser = (req, res, next) => {
+//   const { id } = req.params;
+//   User.findById(id)
+//     .orFail(() => new NotFound('В базе отсутствует пользователь по заданному id'))
+//     .then((user) => res.status(SUCCESS).send({ user }))
+//     .catch((err) => {
+//       if (err.kind === 'ObjectId') {
+//         next(new BadRequest('Передан невалидный id'));
+//         // return res.status(BAD_REQUEST).send({
+//         //   message: 'Переданы некорректные данные',
+//         // });
+//       } else {
+//         next(err);
+//       }
+//     });
+// };
 //       if (err.name === 'DocumentNotFoundError') {
 //         return res.status(NOT_FOUND).send({
 //           message: 'Пользователь по указанному id не найден',
