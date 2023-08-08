@@ -6,11 +6,7 @@ const { validateId, validateCard, validateLikes } = require('../middlewares/vali
 
 router.get('/', getCards);
 router.post('/', validateCard, createCard);
-router.delete('/:cardId', celebrate({
-  params: Joi.object().keys({
-    id: Joi.string().length(24).hex().required(),
-  }),
-}), deleteCard);
+router.delete('/:cardId', validateId, deleteCard);
 router.put('/:cardId/likes', validateLikes, likeCard);
 router.delete('/:cardId/likes', validateLikes, dislikeCard);
 

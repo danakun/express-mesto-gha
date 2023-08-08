@@ -11,7 +11,7 @@ const validateLogin = celebrate({
   }),
 });
 
-// id Validation
+// user id Validation
 const validateId = celebrate({
   params: Joi.object().keys({
     id: Joi.string().length(24).hex().required(),
@@ -81,8 +81,15 @@ const validateCard = celebrate({
 });
 
 const validateLikes = celebrate({
-  params: Joi.object().keys({ cardId: Joi.string().length(24).hex() }) });
+  params: Joi.object().keys({ cardId: Joi.string().length(24).hex() }),
+});
 
 module.exports = {
-  validateId, validateUser, validateAvatar, validateCard, validateLogin, validateSignUp, validateLikes
+  validateId,
+  validateUser,
+  validateAvatar,
+  validateCard,
+  validateLogin,
+  validateSignUp,
+  validateLikes,
 };
