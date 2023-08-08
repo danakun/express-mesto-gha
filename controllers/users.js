@@ -43,6 +43,12 @@ const getUser = (req, res, next) => {
     });
 };
 
+const getMe = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => res.send(user))
+    .catch(next);
+};
+
 // const getUser = (req, res, next) => {
 //   const { id } = req.params;
 //   User.findById(id)
@@ -159,5 +165,11 @@ const updateAvatar = (req, res, next) => {
 };
 
 module.exports = {
-  getUser, getUsers, createUser, login, updateUser, updateAvatar,
+  getUsers,
+  getMe,
+  getUser,
+  createUser,
+  login,
+  updateUser,
+  updateAvatar,
 };
