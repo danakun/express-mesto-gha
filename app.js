@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const express = require('express');
 const helmet = require('helmet');
+const cors = require('cors');
 const { errors } = require('celebrate');
 const limiter = require('./middlewares/limiter');
 // const path = require('path');
@@ -10,8 +11,13 @@ const errorHandler = require('./middlewares/error-handler');
 // const auth = require('./middlewares/auth');
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
+
 // Создание экземпляра приложения Express
 const app = express();
+
+// Подключаем корс
+app.use(cors());
+
 // Подключаем rate-limiter
 app.use(limiter);
 // Подключаем защиту зашоловков
