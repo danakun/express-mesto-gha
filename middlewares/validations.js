@@ -1,6 +1,5 @@
 const { Joi, celebrate } = require('celebrate');
 const validator = require('validator');
-// const { ObjectId } = require('mongoose').Types;
 const { isMail } = require('../utils/constants');
 
 // User login validation

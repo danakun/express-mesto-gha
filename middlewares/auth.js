@@ -9,7 +9,6 @@ const auth = (req, res, next) => {
   // Проверка авторизации
   if (!authorization || !authorization.startsWith(bearer)) {
     return next(new Unauthorized(`${errorMessage}(${authorization})!!!`));
-    // next(new Unauthorized('Необходима авторизация'));
   }
 
   const token = authorization.replace(bearer, '');
@@ -28,6 +27,7 @@ const auth = (req, res, next) => {
 
 module.exports = auth;
 
+//  older version
 // const auth = (req, res, next) => {
 //   const { authorization } = req.headers;
 //   const bearer = 'Bearer ';

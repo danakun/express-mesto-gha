@@ -9,39 +9,10 @@ const User = require('../models/user');
 
 const { SUCCESS } = require('../utils/constants');
 const { CREATED } = require('../utils/constants');
-// const { BAD_REQUEST } = require('../utils/constants');
-// const { NOT_FOUND } = require('../utils/constants');
-// const { INTERNAL_SERVER_ERROR } = require('../utils/constants');
+
 const NotFound = require('../errors/NotFound');
 const BadRequest = require('../errors/BadRequest');
 const Conflict = require('../errors/Conflict');
-
-const getUser = (req, res, next) => {
-  const { userId } = req.params;
-  const loggedInUserId = req.user._id.toString();
-
-  const targetUserId = userId === 'me' ? loggedInUserId : userId;
-
-  User.findById(targetUserId)
-    .orFail(() => new NotFound('User not found'))
-    .then((user) => {
-      const userResponse = {
-        _id: user._id.toString(),
-        email: user.email,
-        name: user.name,
-        about: user.about,
-        avatar: user.avatar,
-      };
-      res.status(SUCCESS).send(userResponse);
-    })
-    .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        next(new BadRequest('Invalid user ID'));
-      } else {
-        next(err);
-      }
-    });
-};
 
 const getMe = (req, res, next) => {
   User.findById(req.user._id)
@@ -49,35 +20,22 @@ const getMe = (req, res, next) => {
     .catch(next);
 };
 
-// const getUser = (req, res, next) => {
-//   const { id } = req.params;
-//   User.findById(id)
-//     .orFail(() => new NotFound('В базе отсутствует пользователь по заданному id'))
-//     .then((user) => res.status(SUCCESS).send({ user }))
-//     .catch((err) => {
-//       if (err.kind === 'ObjectId') {
-//         next(new BadRequest('Передан невалидный id'));
-//         // return res.status(BAD_REQUEST).send({
-//         //   message: 'Переданы некорректные данные',
-//         // });
-//       } else {
-//         next(err);
-//       }
-//     });
-// };
-//       if (err.name === 'DocumentNotFoundError') {
-//         return res.status(NOT_FOUND).send({
-//           message: 'Пользователь по указанному id не найден',
-//         });
-//       }
-//       return res
-//         .status(INTERNAL_SERVER_ERROR)
-//         .send({
-//           message:
-//             'Внутренняя ошибка сервера',
-//         });
-//     'Переданы некорректные данные'
-// };
+const getUser = (req, res, next) => {
+  const { userId } = req.params;
+
+  User.findById(userId)
+    .orFail(() => new NotFound('В базе отсутствует пользователь по заданному id'))
+    .then((user) => {
+      res.status(SUCCESS).send(user);
+    })
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        next(new BadRequest('Передан невалидный id'));
+      } else {
+        next(err);
+      }
+    });
+};
 
 // Получение всех пользователей
 const getUsers = (req, res, next) => User.find({})
@@ -173,3 +131,30 @@ module.exports = {
   updateUser,
   updateAvatar,
 };
+
+// const getUser = (req, res, next) => {
+//   const { userId } = req.params;
+//   const loggedInUserId = req.user._id.toString();
+
+//   const targetUserId = userId === 'me' ? loggedInUserId : userId;
+
+//   User.findById(targetUserId)
+//     .orFail(() => new NotFound('User not found'))
+//     .then((user) => {
+//       const userResponse = {
+//         _id: user._id.toString(),
+//         email: user.email,
+//         name: user.name,
+//         about: user.about,
+//         avatar: user.avatar,
+//       };
+//       res.status(SUCCESS).send(userResponse);
+//     })
+//     .catch((err) => {
+//       if (err.kind === 'ObjectId') {
+//         next(new BadRequest('Invalid user ID'));
+//       } else {
+//         next(err);
+//       }
+//     });
+// };

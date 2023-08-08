@@ -33,18 +33,6 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
 
 app.use(express.json());
 // app.use(express.static(path.join(__dirname, 'public')));   -подключение статичного фронта
-// app.use((req, res, next) => {                              -хардкод айдишки из пр13
-//   req.user = {
-//     _id: '64bc0a9d42e557548b000e87',
-//   };
-//   next();
-// });
-
-// Подключение маршрутов без авторизации
-// app.post('/signin', login);
-// app.post('/signup', createUser);
-// авторизация
-// app.use(auth);
 
 // Подключение маршрутов, которым авторизация нужна
 app.use(router);
